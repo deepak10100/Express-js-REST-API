@@ -1,54 +1,52 @@
 const express = require('express')
 const app = express()
 const port = 3000
+
 var bodyParser = require('body-parser')
+
 // parse application/x-www-form-urlencoded
 app.use(bodyParser.urlencoded({ extended: false }))
 
 // parse application/json
 app.use(bodyParser.json())
-
 const mongoose = require('mongoose');
 mongoose.connect('mongodb://127.0.0.1:27017/mydata').then(()=>{
-  console.log("connection successfully")
+  console.log("connection Access")
 }).catch(()=>{
-  console.log("Connection decined", )
-})
-const Students = new mongoose.Schema({
-  name: String,
-  age:Number
+  console.log("connection Decined")
 });
-const Person = mongoose.model('Person', Students);
 
+const studentSchema = new mongoose.Schema({
+  name: String,
+  marks:Number
+});
+const student = mongoose.model('Student', studentSchema);
 app.post('/api/v1/create', async(req, res) => {
-  let student = await Person.create(req.body)
+  let students = await student.create(req.body)
   res.json({
     success:true,
-    student
+    students
   })
 })
-
-app.get('/api/v1/allstudent', async(req, res) => {
-  let student = await Person.find()
+app.get('/api/v1/students', async(req, res) => {
+  let students = await student.find()
   res.json({
     success:true,
-    student
+    students
   })
 })
-
-app.put('/api/v1/student/:id', async(req, res) => {
-   let student = await Person.findByIdAndUpdate(req.params.id,req.body)
+app.put('/api/v1/students/:id', async(req, res) => {
+  let students = await student.findByIdAndUpdate(req.params.id,req.body)
   res.json({
     success:true,
-    student
+    students
   })
 })
-app.delete('/api/v1/student/:id', async(req, res) => {
-   let student = await Person.findByIdAndDelete(req.params.id,req.body)
+app.delete('/api/v1/students/:id', async(req, res) => {
+  let students = await student.findByIdAndDelete(req.params.id,req.body)
   res.json({
     success:true,
-    student:"delete student details"
-  
+    students
   })
 })
 
